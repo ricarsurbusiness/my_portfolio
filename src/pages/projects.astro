@@ -1,0 +1,257 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { projects } from "../data/projects";
+
+// Obtener todas las categorías únicas
+const allCategories = [
+    ...new Set(projects.flatMap((p) => p.categories)),
+].sort();
+---
+
+<Layout
+    title="Proyectos | Ricardo Suárez"
+    description="Explora todos mis proyectos de desarrollo full stack, microservicios, aplicaciones móviles y más"
+>
+    <section class="projects-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <h1>Todos los Proyectos</h1>
+                <p>
+                    Colección completa de proyectos que demuestran mis
+                    habilidades en desarrollo full stack
+                </p>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">
+                    Todos ({projects.length})
+                </button>
+                {
+                    allCategories.map((category) => (
+                        <button class="filter-btn" data-category={category}>
+                            {category}
+                        </button>
+                    ))
+                }
+            </div>
+
+            <!-- Grid de proyectos -->
+            <div class="projects-grid">
+                {
+                    projects.map((project) => (
+                        <div
+                            class="project-item"
+                            data-categories={project.categories.join(",")}
+                        >
+                            <ProjectCard project={project} />
+                        </div>
+                    ))
+                }
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" style="display: none;">
+                <div class="empty-icon">🔍</div>
+                <h3>No se encontraron proyectos</h3>
+                <p>Intenta con otra categoría</p>
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .projects-page {
+        padding: 6rem 0 4rem;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .page-header p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Filtros */
+    .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-bottom: 3rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: capitalize;
+    }
+
+    .filter-btn:hover {
+        background: rgba(0, 255, 136, 0.1);
+        color: #00ff88;
+        border-color: rgba(0, 255, 136, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+        background: rgba(0, 255, 136, 0.15);
+        color: #00ff88;
+        border-color: #00ff88;
+    }
+
+    /* Grid de proyectos */
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .project-item {
+        animation: fadeIn 0.5s ease;
+    }
+
+    .project-item.hidden {
+        display: none;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        color: #fff;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .page-header p {
+            font-size: 1rem;
+        }
+
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filters {
+            padding: 1rem;
+        }
+
+        .filter-btn {
+            font-size: 0.85rem;
+            padding: 0.6rem 1.2rem;
+        }
+    }
+</style>
+
+<script>
+    // Sistema de filtros
+    document.addEventListener("DOMContentLoaded", () => {
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        const projectItems = document.querySelectorAll(".project-item");
+        const emptyState = document.querySelector(
+            ".empty-state",
+        ) as HTMLElement;
+
+        filterButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const category = button.getAttribute("data-category");
+
+                // Actualizar botones activos
+                filterButtons.forEach((btn) => btn.classList.remove("active"));
+                button.classList.add("active");
+
+                // Filtrar proyectos
+                let visibleCount = 0;
+
+                projectItems.forEach((item) => {
+                    const categories =
+                        item.getAttribute("data-categories") || "";
+
+                    if (
+                        category === "all" ||
+                        categories.includes(category || "")
+                    ) {
+                        item.classList.remove("hidden");
+                        visibleCount++;
+                    } else {
+                        item.classList.add("hidden");
+                    }
+                });
+
+                // Mostrar/ocultar empty state
+                if (visibleCount === 0) {
+                    emptyState.style.display = "block";
+                } else {
+                    emptyState.style.display = "none";
+                }
+            });
+        });
+    });
+</script>

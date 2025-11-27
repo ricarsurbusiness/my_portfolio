@@ -1,0 +1,135 @@
+---
+// Astro.url.pathname nos da la ruta actual (ej: "/", "/projects", etc.)
+const currentPath = Astro.url.pathname;
+
+// Array de links de navegación
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/projects", label: "Proyectos" },
+  { href: "/about", label: "Sobre mí" },
+  { href: "/cv", label: "CV" },
+];
+---
+
+<header>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">
+        <span class="logo-bracket">{"<"}</span>
+        RS
+        <span class="logo-bracket">{"/>"}</span>
+      </a>
+
+      <ul class="nav-links">
+        {
+          navLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class={currentPath === link.href ? "active" : ""}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 10, 20, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    font-family: "Courier New", monospace;
+    transition: color 0.3s;
+  }
+
+  .logo-bracket {
+    color: #00ff88;
+  }
+
+  .logo:hover {
+    color: #00ff88;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: #00ff88;
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover {
+    color: #fff;
+  }
+
+  .nav-links a:hover::after {
+    width: 80%;
+  }
+
+  .nav-links a.active {
+    color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .nav-links {
+      gap: 1rem;
+    }
+
+    .nav-links a {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>

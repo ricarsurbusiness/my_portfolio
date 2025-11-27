@@ -1,0 +1,102 @@
+---
+import type { Skill } from "../types/portfolio";
+
+interface Props {
+  skill: Skill;
+  showLevel?: boolean; // Prop opcional
+}
+
+const { skill, showLevel = true } = Astro.props;
+
+// Mapear nivel a color
+const levelColors = {
+  beginner: "#3b82f6", // azul
+  intermediate: "#8b5cf6", // morado
+  advanced: "#f59e0b", // naranja
+  expert: "#00ff88", // verde
+};
+
+const levelLabels = {
+  beginner: "Principiante",
+  intermediate: "Intermedio",
+  advanced: "Avanzado",
+  expert: "Experto",
+};
+---
+
+<div class="skill-badge" data-level={skill.level}>
+  <div class="skill-content">
+    {skill.iconUrl && <span class="skill-icon">{skill.iconUrl}</span>}
+    <span class="skill-name">{skill.name}</span>
+  </div>
+
+  {
+    showLevel && (
+      <span class="skill-level" style={`background: ${levelColors[skill.level]}`}>
+        {levelLabels[skill.level]}
+      </span>
+    )
+  }
+</div>
+
+<style>
+  .skill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .skill-badge:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .skill-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .skill-icon {
+    font-size: 1.2rem;
+  }
+
+  .skill-name {
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .skill-level {
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #0a0a14;
+  }
+
+  /* Variantes por nivel */
+  .skill-badge[data-level="expert"] {
+    border-color: rgba(0, 255, 136, 0.3);
+  }
+
+  .skill-badge[data-level="expert"]:hover {
+    border-color: rgba(0, 255, 136, 0.5);
+    box-shadow: 0 4px 16px rgba(0, 255, 136, 0.2);
+  }
+
+  .skill-badge[data-level="advanced"] {
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .skill-badge[data-level="advanced"]:hover {
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+  }
+</style>

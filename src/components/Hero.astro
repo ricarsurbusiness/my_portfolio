@@ -1,0 +1,348 @@
+---
+// No recibe props, es un componente estático para el home
+---
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="greeting">
+                <span class="wave">👋</span>
+                <span>Hola, soy</span>
+            </div>
+
+            <h1 class="hero-title">
+                <span class="name">Ricardo Suárez</span>
+                <span class="cursor">_</span>
+            </h1>
+
+            <h2 class="hero-subtitle">
+                <span class="bracket">{"<"}</span>
+                Full Stack Developer
+                <span class="bracket">{"/>"}</span>
+            </h2>
+
+            <p class="hero-description">
+                Especializado en crear aplicaciones web escalables y eficientes
+                con TypeScript, React, Node.js y arquitecturas de
+                microservicios. Apasionado por resolver problemas complejos con
+                código limpio.
+            </p>
+
+            <div class="hero-cta">
+                <a href="/projects" class="btn-primary">Ver Proyectos</a>
+                <a href="/cv" class="btn-secondary">Descargar CV</a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">3+</span>
+                    <span class="stat-label">Años de experiencia</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">Proyectos completados</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">10+</span>
+                    <span class="stat-label">Tecnologías</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="code-window">
+                <div class="window-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <div class="window-content">
+                    <code>
+                        <span class="line"
+                            ><span class="code-keyword">const</span> developer =
+                            &#123;</span
+                        >
+                        <span class="line">
+                            <span class="code-prop">name</span>: <span
+                                class="code-string">"Ricardo Suárez"</span
+                            >,</span
+                        >
+                        <span class="line">
+                            <span class="code-prop">role</span>: <span
+                                class="code-string">"Full Stack"</span
+                            >,</span
+                        >
+                        <span class="line">
+                            <span class="code-prop">skills</span>: [</span
+                        >
+                        <span class="line">
+                            <span class="code-string">"TypeScript"</span>,</span
+                        >
+                        <span class="line">
+                            <span class="code-string">"React"</span>,</span
+                        >
+                        <span class="line">
+                            <span class="code-string">"Node.js"</span>,</span
+                        >
+                        <span class="line">
+                            <span class="code-string">"Go"</span>,</span
+                        >
+                        <span class="line">
+                            <span class="code-string">"Python"</span></span
+                        >
+                        <span class="line"> ],</span>
+                        <span class="line">
+                            <span class="code-prop">passion</span>: <span
+                                class="code-string">"Code"</span
+                            ></span
+                        >
+                        <span class="line">&#125;;</span>
+                    </code>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hero {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        padding: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .hero-content {
+        z-index: 2;
+    }
+
+    .greeting {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .wave {
+        animation: wave 2s ease-in-out infinite;
+        display: inline-block;
+    }
+
+    @keyframes wave {
+        0%,
+        100% {
+            transform: rotate(0deg);
+        }
+        25% {
+            transform: rotate(20deg);
+        }
+        75% {
+            transform: rotate(-20deg);
+        }
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        margin: 0 0 1rem 0;
+        line-height: 1.1;
+    }
+
+    .name {
+        background: linear-gradient(135deg, #00ff88, #00ccff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .cursor {
+        color: #00ff88;
+        animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+    }
+
+    .hero-subtitle {
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        margin: 0 0 1.5rem 0;
+        font-family: "Courier New", monospace;
+    }
+
+    .bracket {
+        color: #00ff88;
+    }
+
+    .hero-description {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.8;
+        margin-bottom: 2rem;
+        max-width: 600px;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #00ff88, #00cc6a);
+        color: #0a0a14;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: #00ff88;
+        border: 2px solid #00ff88;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(0, 255, 136, 0.1);
+    }
+
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #00ff88;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 0.5rem;
+    }
+
+    /* Code Window */
+    .code-window {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .window-header {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.75rem 1rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .dot.red {
+        background: #ff5f56;
+    }
+    .dot.yellow {
+        background: #ffbd2e;
+    }
+    .dot.green {
+        background: #27c93f;
+    }
+
+    .window-content {
+        padding: 1.5rem;
+        font-family: "Courier New", monospace;
+        font-size: 0.9rem;
+        line-height: 1.8;
+    }
+
+    .line {
+        display: block;
+    }
+
+    .code-keyword {
+        color: #ff79c6;
+    }
+    .code-prop {
+        color: #8be9fd;
+    }
+    .code-string {
+        color: #50fa7b;
+    }
+
+    @media (max-width: 968px) {
+        .container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .hero-visual {
+            order: -1;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+        }
+
+        .hero-stats {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+    }
+</style>

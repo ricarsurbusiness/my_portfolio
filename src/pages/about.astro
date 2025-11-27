@@ -1,0 +1,618 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SkillBadge from "../components/SkillBadge.astro";
+import { skillsByCategory } from "../data/skills";
+import { languages } from "../data/languages";
+import { softSkills } from "../data/softSkills";
+---
+
+<Layout
+    title="Sobre Mí | Ricardo Suárez"
+    description="Conoce más sobre mi trayectoria como desarrollador full stack y las tecnologías que domino"
+>
+    <section class="about-page">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <h1>Sobre Mí</h1>
+                <p>Desarrollador Full Stack apasionado por la tecnología</p>
+            </div>
+
+            <!-- Bio Section -->
+            <div class="bio-section">
+                <div class="bio-content">
+                    <div class="bio-image">
+                        <div class="image-placeholder">
+                            <span class="code-symbol">&lt;/&gt;</span>
+                        </div>
+                    </div>
+
+                    <div class="bio-text">
+                        <h2>Hola, soy Ricardo José Suárez Ravelo</h2>
+                        <div class="bio-description">
+                            <p>
+                                Soy un <strong
+                                    >Desarrollador Full Stack con inclinación
+                                    hacia backend</strong
+                                >, especializado en crear soluciones funcionales
+                                y eficientes. Tengo experiencia práctica con <strong
+                                    >Go, Node.js, Python, React y TypeScript</strong
+                                >, trabajando tanto en el desarrollo de APIs
+                                como en interfaces de usuario.
+                            </p>
+                            <p>
+                                Estoy familiarizado con diferentes sistemas de
+                                bases de datos como
+                                <strong>PostgreSQL, MongoDB y MySQL</strong>, y
+                                herramientas de desarrollo modernas como <strong
+                                    >Docker</strong
+                                > para despliegues.
+                            </p>
+                            <p>
+                                Mi enfoque se centra en implementar <strong
+                                    >arquitecturas de microservicios</strong
+                                >, optimización de rendimiento y escalabilidad
+                                de aplicaciones. He trabajado con tecnologías
+                                cloud como <strong>Azure</strong>, sistemas de
+                                mensajería como
+                                <strong>Twilio API</strong>, y API Gateways como <strong
+                                    >KrakenD</strong
+                                >.
+                            </p>
+                            <p>
+                                Busco aplicar mis conocimientos técnicos en
+                                proyectos desafiantes donde pueda seguir
+                                creciendo profesionalmente, implementando
+                                soluciones que realmente impacten y resuelvan
+                                problemas complejos.
+                            </p>
+                        </div>
+
+                        <div class="bio-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">6+</span>
+                                <span class="stat-label"
+                                    >Proyectos Completados</span
+                                >
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">3+</span>
+                                <span class="stat-label"
+                                    >Años de Experiencia</span
+                                >
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">10+</span>
+                                <span class="stat-label">Tecnologías</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="skills-section">
+                <div class="section-header">
+                    <h2>Habilidades Técnicas</h2>
+                    <p>
+                        Tecnologías y herramientas que utilizo en mi día a día
+                    </p>
+                </div>
+
+                <!-- Frontend Skills -->
+                <div class="skill-category">
+                    <h3>
+                        <span class="category-icon">🎨</span>
+                        Frontend Development
+                    </h3>
+                    <div class="skills-grid">
+                        {
+                            skillsByCategory.frontend.map((skill) => (
+                                <SkillBadge skill={skill} />
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <!-- Backend Skills -->
+                <div class="skill-category">
+                    <h3>
+                        <span class="category-icon">⚙️</span>
+                        Backend Development
+                    </h3>
+                    <div class="skills-grid">
+                        {
+                            skillsByCategory.backend.map((skill) => (
+                                <SkillBadge skill={skill} />
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <!-- DevOps Skills -->
+                <div class="skill-category">
+                    <h3>
+                        <span class="category-icon">🚀</span>
+                        DevOps & Cloud
+                    </h3>
+                    <div class="skills-grid">
+                        {
+                            skillsByCategory.devops.map((skill) => (
+                                <SkillBadge skill={skill} />
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <!-- Design & Tools -->
+                <div class="skill-category">
+                    <h3>
+                        <span class="category-icon">🛠️</span>
+                        Design & Tools
+                    </h3>
+                    <div class="skills-grid">
+                        {
+                            skillsByCategory.design.map((skill) => (
+                                <SkillBadge skill={skill} />
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soft Skills Section -->
+            <div class="soft-skills-section">
+                <div class="section-header">
+                    <h2>Habilidades Blandas</h2>
+                    <p>Competencias interpersonales y profesionales</p>
+                </div>
+                <div class="soft-skills-grid">
+                    {
+                        softSkills.map((skill) => (
+                            <div class="soft-skill-card">
+                                <h4>{skill.name}</h4>
+                                {skill.description && (
+                                    <p>{skill.description}</p>
+                                )}
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- Languages Section -->
+            <div class="languages-section">
+                <div class="section-header">
+                    <h2>Idiomas</h2>
+                    <p>Idiomas que domino</p>
+                </div>
+                <div class="languages-grid">
+                    {
+                        languages.map((language) => (
+                            <div class="language-card">
+                                <div class="language-name">{language.name}</div>
+                                <div class={`language-level ${language.level}`}>
+                                    {language.level.charAt(0).toUpperCase() +
+                                        language.level.slice(1)}
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <h2>¿Interesado en trabajar juntos?</h2>
+                <p>Estoy abierto a nuevas oportunidades y colaboraciones</p>
+                <div class="cta-buttons">
+                    <a href="/cv" class="btn-primary">Ver CV Completo</a>
+                    <a href="/projects" class="btn-secondary">Ver Proyectos</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .about-page {
+        padding: 6rem 0 4rem;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    /* Page Header */
+    .page-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .page-header p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.2rem;
+    }
+
+    /* Bio Section */
+    .bio-section {
+        margin-bottom: 5rem;
+    }
+
+    .bio-content {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    .bio-image {
+        position: sticky;
+        top: 100px;
+    }
+
+    .image-placeholder {
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(
+            135deg,
+            rgba(0, 255, 136, 0.1),
+            rgba(0, 255, 136, 0.05)
+        );
+        border: 2px solid rgba(0, 255, 136, 0.2);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .code-symbol {
+        font-size: 6rem;
+        color: #00ff88;
+        font-weight: 700;
+        opacity: 0.3;
+    }
+
+    .bio-text h2 {
+        font-size: 2rem;
+        color: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    .bio-description {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+
+    .bio-description p {
+        margin-bottom: 1rem;
+    }
+
+    .bio-description strong {
+        color: #00ff88;
+        font-weight: 600;
+    }
+
+    .bio-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        display: block;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #00ff88;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        display: block;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+    }
+
+    /* Skills Section */
+    .skills-section {
+        margin-bottom: 5rem;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #fff, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section-header p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.1rem;
+    }
+
+    .skill-category {
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+    }
+
+    .skill-category h3 {
+        color: #fff;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .category-icon {
+        font-size: 1.75rem;
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(
+            135deg,
+            rgba(0, 255, 136, 0.05),
+            rgba(0, 255, 136, 0.02)
+        );
+        border: 1px solid rgba(0, 255, 136, 0.1);
+        border-radius: 16px;
+    }
+
+    .cta-section h2 {
+        font-size: 2rem;
+        color: #fff;
+        margin-bottom: 0.75rem;
+    }
+
+    .cta-section p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #00ff88;
+        color: #0a0a14;
+    }
+
+    .btn-primary:hover {
+        background: #00cc6a;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: #00ff88;
+        border: 2px solid #00ff88;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(0, 255, 136, 0.1);
+        transform: translateY(-2px);
+    }
+
+    /* Soft Skills Section */
+    .soft-skills-section {
+        margin-bottom: 5rem;
+    }
+
+    .soft-skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .soft-skill-card {
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .soft-skill-card:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(0, 255, 136, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .soft-skill-card h4 {
+        color: #00ff88;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .soft-skill-card p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Languages Section */
+    .languages-section {
+        margin-bottom: 5rem;
+    }
+
+    .languages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .language-card {
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .language-card:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(0, 255, 136, 0.3);
+    }
+
+    .language-name {
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .language-level {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        width: fit-content;
+    }
+
+    .language-level.nativo {
+        background: linear-gradient(135deg, #00ff88, #00cc6a);
+        color: #0a0a14;
+    }
+
+    .language-level.avanzado {
+        background: rgba(0, 150, 255, 0.2);
+        color: #0096ff;
+        border: 1px solid rgba(0, 150, 255, 0.3);
+    }
+
+    .language-level.intermedio {
+        background: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .language-level.básico {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+        .bio-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .bio-image {
+            position: static;
+            display: flex;
+            justify-content: center;
+        }
+
+        .image-placeholder {
+            width: 250px;
+            height: 250px;
+        }
+
+        .bio-stats {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .soft-skills-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .languages-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .bio-text h2 {
+            font-size: 1.5rem;
+        }
+
+        .bio-description {
+            font-size: 1rem;
+        }
+
+        .skills-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .languages-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

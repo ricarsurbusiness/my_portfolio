@@ -3,10 +3,20 @@ export interface Project {
   title: string;
   description: string;
   imageUrl: string;
+  technologies: string[];
   githubUrl?: string;
   liveUrl?: string;
   featured: boolean;
-  category: "web" | "mobile" | "desktop" | "api";
+  categories: (
+    | "web"
+    | "movil"
+    | "desktop"
+    | "api"
+    | "devops"
+    | "fullstack"
+    | "backend"
+    | "microservices"
+  )[];
 }
 
 export interface Skill {
@@ -30,6 +40,7 @@ export interface Education {
   institution: string;
   degree: string;
   fieldOfStudy: string;
+  certificate?: string; // URL to certificate or undefined
   startDate: string; // ISO format date string
   endDate?: string; // ISO format date string or undefined if currently studying
   description?: string;
@@ -44,4 +55,14 @@ export interface PersonalInfo {
   phone?: string;
   linkedIn?: string;
   github?: string;
+}
+
+export interface Language {
+  name: string;
+  level: "nativo" | "avanzado" | "intermedio" | "básico";
+}
+
+export interface SoftSkill {
+  name: string;
+  description?: string;
 }

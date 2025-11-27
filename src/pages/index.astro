@@ -1,11 +1,167 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import SkillBadge from "../components/SkillBadge.astro";
+import { getFeaturedProjects } from "../data/projects";
+import { skills } from "../data/skills";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Obtener proyectos destacados (máximo 3 para el home)
+const featuredProjects = getFeaturedProjects().slice(0, 3);
+
+// Obtener solo skills principales (expert y advanced)
+const mainSkills = skills
+    .filter((s) => s.level === "expert" || s.level === "advanced")
+    .slice(0, 8);
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+    title="Ricardo Suárez | Full Stack Developer Portfolio"
+    description="Portfolio de Ricardo Suárez - Desarrollador Full Stack especializado en TypeScript, React, Node.js, Go y arquitecturas de microservicios"
+>
+    <Hero />
+
+    <!-- Sección de Proyectos Destacados -->
+    <section class="featured-projects">
+        <div class="container">
+            <div class="section-header">
+                <h2>Proyectos Destacados</h2>
+                <p>Algunos de mis trabajos más recientes</p>
+            </div>
+
+            <div class="projects-grid">
+                {
+                    featuredProjects.map((project) => (
+                        <ProjectCard project={project} />
+                    ))
+                }
+            </div>
+
+            <div class="section-footer">
+                <a href="/projects" class="btn-view-all">
+                    Ver todos los proyectos
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Skills -->
+    <section class="skills-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Habilidades Principales</h2>
+                <p>Tecnologías que domino</p>
+            </div>
+
+            <div class="skills-grid">
+                {mainSkills.map((skill) => <SkillBadge skill={skill} />)}
+            </div>
+
+            <div class="section-footer">
+                <a href="/about" class="btn-view-all">
+                    Ver todas las habilidades
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </section>
 </Layout>
+
+<style>
+    section {
+        padding: 4rem 0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #fff, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section-header p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.1rem;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .section-footer {
+        text-align: center;
+    }
+
+    .btn-view-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        background: transparent;
+        color: #00ff88;
+        border: 2px solid #00ff88;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view-all:hover {
+        background: rgba(0, 255, 136, 0.1);
+        transform: translateX(4px);
+    }
+
+    .arrow {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-view-all:hover .arrow {
+        transform: translateX(4px);
+    }
+
+    .featured-projects {
+        background: linear-gradient(
+            180deg,
+            rgba(0, 255, 136, 0.05) 0%,
+            transparent 100%
+        );
+    }
+
+    @media (max-width: 768px) {
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .skills-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+    }
+</style>
