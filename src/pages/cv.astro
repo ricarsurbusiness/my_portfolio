@@ -9,6 +9,8 @@ import { languages } from "../data/languages";
 import { softSkills } from "../data/softSkills";
 import type { Education } from "../types/portfolio";
 
+const base = import.meta.env.BASE_URL;
+
 // Agrupar skills por nivel para mostrar en el CV
 const expertSkills = skills.filter((s) => s.level === "expert");
 const advancedSkills = skills.filter((s) => s.level === "advanced");
@@ -28,7 +30,7 @@ const intermediateSkills = skills.filter((s) => s.level === "intermediate");
                     <p>Desarrollador Full Stack</p>
                 </div>
                 <a
-                    href="/Ricardo-Suarez-CV.pdf"
+                    href={`${base}Ricardo-Suarez-CV.pdf`}
                     download="Ricardo_Suarez_CV.pdf"
                     class="btn-download"
                 >
@@ -288,8 +290,9 @@ const intermediateSkills = skills.filter((s) => s.level === "intermediate");
                 </h2>
                 <p class="projects-cta">
                     Visita la sección de{" "}
-                    <a href="/projects" class="link-highlight">proyectos</a> para
-                    ver mi portafolio completo de aplicaciones web, microservicios
+                    <a href={`${base}projects`} class="link-highlight"
+                        >proyectos</a
+                    > para ver mi portafolio completo de aplicaciones web, microservicios
                     y aplicaciones móviles.
                 </p>
             </div>
