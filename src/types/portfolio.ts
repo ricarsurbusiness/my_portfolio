@@ -3,6 +3,7 @@ export interface Project {
   title: string;
   description: string;
   imageUrl: string;
+  imageGallery?: string[]; // Array de URLs para carrusel de imágenes
   technologies: string[];
   githubUrl?: string;
   liveUrl?: string;

@@ -23,7 +23,11 @@ import { softSkills } from "../data/softSkills";
                 <div class="bio-content">
                     <div class="bio-image">
                         <div class="image-placeholder">
-                            <span class="code-symbol">&lt;/&gt;</span>
+                            <img
+                                src="/logo.png"
+                                alt="Ricardo Suárez Logo"
+                                class="logo-image"
+                            />
                         </div>
                     </div>
 
@@ -76,7 +80,7 @@ import { softSkills } from "../data/softSkills";
                                 >
                             </div>
                             <div class="stat-item">
-                                <span class="stat-value">3+</span>
+                                <span class="stat-value">1+</span>
                                 <span class="stat-label"
                                     >Años de Experiencia</span
                                 >
@@ -265,26 +269,23 @@ import { softSkills } from "../data/softSkills";
 
     .image-placeholder {
         width: 300px;
-        height: 300px;
-        background: linear-gradient(
-            135deg,
-            rgba(0, 255, 136, 0.1),
-            rgba(0, 255, 136, 0.05)
-        );
+        height: 270px;
+        background: transparent;
         border: 2px solid rgba(0, 255, 136, 0.2);
         border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
+        padding: 0;
     }
 
-    .code-symbol {
-        font-size: 6rem;
-        color: #00ff88;
-        font-weight: 700;
-        opacity: 0.3;
+    .logo-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 12px;
     }
 
     .bio-text h2 {

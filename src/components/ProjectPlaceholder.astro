@@ -1,0 +1,165 @@
+---
+import type { Project } from "../types/portfolio";
+
+interface Props {
+    project: Project;
+}
+
+const { project } = Astro.props;
+
+// Colores de gradiente según la categoría principal del proyecto
+const categoryGradients: Record<string, string> = {
+    backend: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    frontend: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    fullstack: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    mobile: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+    movil: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+    api: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    microservices: "linear-gradient(135deg, #30cfd0 0%, #330867 100%)",
+    devops: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    web: "linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)",
+    desktop: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+};
+
+// Obtener el gradiente basado en la primera categoría
+const mainCategory = project.categories[0] || "web";
+const gradient = categoryGradients[mainCategory] || categoryGradients.web;
+
+// Seleccionar las primeras 4 tecnologías para mostrar
+const displayTechs = project.technologies.slice(0, 4);
+---
+
+<div class="project-placeholder" style={`background: ${gradient}`}>
+    <div class="placeholder-content">
+        <div class="tech-grid">
+            {
+                displayTechs.map((tech) => (
+                    <div class="tech-item">
+                        <span class="tech-name">{tech}</span>
+                    </div>
+                ))
+            }
+        </div>
+        {project.technologies.length > 4 && (
+            <div class="more-techs">
+                +{project.technologies.length - 4} más
+            </div>
+        )}
+        <div class="category-badge">
+            {mainCategory.toUpperCase()}
+        </div>
+    </div>
+    <div class="placeholder-pattern"></div>
+</div>
+
+<style>
+    .project-placeholder {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .placeholder-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.1;
+        background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            );
+        pointer-events: none;
+    }
+
+    .placeholder-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 2rem;
+        width: 100%;
+    }
+
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .tech-item {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .tech-item:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .tech-name {
+        color: white;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .more-techs {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-top: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 480px) {
+        .tech-grid {
+            gap: 0.5rem;
+        }
+
+        .tech-item {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .tech-name {
+            font-size: 0.75rem;
+        }
+    }
+</style>
