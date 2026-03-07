@@ -313,7 +313,7 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
     }
 </style>
 
-<script define:vars={{ project }}>
+<script define:vars={{ projectId: project.id }}>
     document.addEventListener("DOMContentLoaded", () => {
         const cards = document.querySelectorAll(".project-card");
 
@@ -330,7 +330,7 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
                     e.stopPropagation();
                     // Dispatch custom event to open the modal
                     const event = new CustomEvent("project-modal:open", {
-                        detail: { projectId: project.id },
+                        detail: { projectId: projectId },
                         bubbles: true,
                         composed: true,
                     });
