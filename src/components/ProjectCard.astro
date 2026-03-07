@@ -28,7 +28,7 @@ const hasRealImage =
 const mainLink = project.liveUrl || project.githubUrl || "#";
 ---
 
-<article class="project-card" data-href={mainLink}>
+<article class="project-card" data-href={mainLink} data-project-id={project.id}>
     <div class="project-image">
         {
             hasRealImage ? (
@@ -313,13 +313,20 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
     }
 </style>
 
-<script define:vars={{ projectId: project.id }}>
+<script>
     document.addEventListener("DOMContentLoaded", () => {
+        console.log("🎴 ProjectCard DOMContentLoaded triggered");
         const cards = document.querySelectorAll(".project-card");
+        console.log(`Found ${cards.length} project cards`);
 
         cards.forEach((card) => {
+            // Get the project ID from the data attribute
+            const projectId = card.getAttribute("data-project-id");
+            console.log(`Setting up card with project ID: ${projectId}`);
+            
             // Handle card click to open modal
             card.addEventListener("click", (e) => {
+                console.log("🖱️ Card clicked! Project ID:", projectId);
                 // Solo si no se clickeó un botón de carrusel
                 const target = e.target as HTMLElement;
                 if (
@@ -329,6 +336,7 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
                     e.preventDefault();
                     e.stopPropagation();
                     // Dispatch custom event to open the modal
+                    console.log("📤 Dispatching project-modal:open event");
                     const event = new CustomEvent("project-modal:open", {
                         detail: { projectId: projectId },
                         bubbles: true,

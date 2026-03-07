@@ -15,9 +15,12 @@ const getImageUrl = (url: string) => {
   if (!url || url.startsWith("http")) return url;
   return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
 };
+
+// Convertir projects a JSON string para pasar al script
+const projectsJson = JSON.stringify(projects);
 ---
 
-<div class="project-modal-overlay" data-visible="false" data-project-id="">
+<div class="project-modal-overlay" data-visible="false" data-project-id="" data-base-url={base} data-projects={projectsJson}>
   <!-- Overlay que cierra el modal al hacer clic -->
   <div class="modal-overlay-bg"></div>
 
@@ -401,181 +404,135 @@ const getImageUrl = (url: string) => {
   }
 </style>
 
-<script define:vars={{ projects }}>
-  // Get the base path for image URLs
-  const base = import.meta.env.BASE_URL;
+<script>
+  // Get modal overlay and parse projects data from attribute
+  const overlay = document.querySelector(".project-modal-overlay");
+  if (!overlay) {
+    console.error("Modal overlay not found");
+  } else {
+    const projectsJson = overlay.getAttribute("data-projects");
+    const base = overlay.getAttribute("data-base-url") || "/";
+    
+    const projectsData = projectsJson ? JSON.parse(projectsJson) : [];
+    let currentProjectId = null;
 
-  const getImageUrl = (url: string) => {
-    if (!url || url.startsWith("http")) return url;
-    return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
-  };
+    console.log("🎯 ProjectDetailModal initialized, found", projectsData.length, "projects");
 
-  const projectsData = projects;
-  let currentProjectId = null;
+    const getImageUrl = (url) => {
+      if (!url || url.startsWith("http")) return url;
+      return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
+    };
 
-  /**
-   * Update modal content with the selected project
-   */
-  function updateModalContent(projectId) {
-    const overlay = document.querySelector(".project-modal-overlay");
-    const project = projectsData.find((p) => p.id === projectId);
+    function updateModalContent(projectId) {
+      const project = projectsData.find((p) => p.id === projectId);
+      if (!project || !overlay) return;
 
-    if (!project || !overlay) return;
+      currentProjectId = projectId;
+      overlay.setAttribute("data-visible", "true");
+      overlay.setAttribute("data-project-id", projectId);
 
-    currentProjectId = projectId;
+      // Update title
+      const titleEl = document.querySelector(".modal-title");
+      if (titleEl) titleEl.textContent = project.title;
 
-    // Update data attributes
-    overlay.setAttribute("data-visible", "true");
-    overlay.setAttribute("data-project-id", projectId);
+      // Update description
+      const descEl = document.querySelector(".modal-description");
+      if (descEl) descEl.textContent = project.description;
 
-    // Update modal title
-    const titleEl = document.querySelector(".modal-title");
-    if (titleEl) titleEl.textContent = project.title;
+      // Update image
+      const imgEl = document.querySelector(".modal-image");
+      if (imgEl) {
+        imgEl.src = getImageUrl(project.imageUrl);
+        imgEl.alt = project.title;
+      }
 
-    // Update modal description
-    const descEl = document.querySelector(".modal-description");
-    if (descEl) descEl.textContent = project.description;
+      // Update featured badge
+      const featuredBadge = document.querySelector(".featured-badge");
+      if (featuredBadge) {
+        featuredBadge.style.display = project.featured ? "block" : "none";
+      }
 
-    // Update modal image
-    const imgEl = document.querySelector(".modal-image");
-    if (imgEl) {
-      imgEl.src = getImageUrl(project.imageUrl);
-      imgEl.alt = project.title;
-    }
+      // Update technologies
+      const techList = document.querySelector(".technologies-list");
+      if (techList) {
+        techList.innerHTML = project.technologies
+          .map((tech) => `<div class="technology-badge">${tech}</div>`)
+          .join("");
+      }
 
-    // Update featured badge
-    const featuredBadge = document.querySelector(".featured-badge");
-    if (featuredBadge) {
-      featuredBadge.style.display = project.featured ? "block" : "none";
-    }
+      // Update categories
+      const catList = document.querySelector(".categories-list");
+      if (catList) {
+        catList.innerHTML = project.categories
+          .map((cat) => `<div class="category-badge">${cat}</div>`)
+          .join("");
+      }
 
-    // Update technologies
-    const techList = document.querySelector(".technologies-list");
-    if (techList) {
-      techList.innerHTML = project.technologies
-        .map((tech) => `<div class="technology-badge">${tech}</div>`)
-        .join("");
-    }
+      // Update links
+      const githubLink = document.querySelector(".github-link");
+      if (githubLink) {
+        if (project.githubUrl) {
+          githubLink.href = project.githubUrl;
+          githubLink.style.display = "block";
+        } else {
+          githubLink.style.display = "none";
+        }
+      }
 
-    // Update categories
-    const catList = document.querySelector(".categories-list");
-    if (catList) {
-      catList.innerHTML = project.categories
-        .map((cat) => `<div class="category-badge">${cat}</div>`)
-        .join("");
-    }
-
-    // Update action links
-    const githubLink = document.querySelector(".github-link");
-    if (githubLink) {
-      if (project.githubUrl) {
-        githubLink.href = project.githubUrl;
-        githubLink.style.display = "block";
-      } else {
-        githubLink.style.display = "none";
+      const liveLink = document.querySelector(".live-link");
+      if (liveLink) {
+        if (project.liveUrl) {
+          liveLink.href = project.liveUrl;
+          liveLink.style.display = "block";
+        } else {
+          liveLink.style.display = "none";
+        }
       }
     }
 
-    const liveLink = document.querySelector(".live-link");
-    if (liveLink) {
-      if (project.liveUrl) {
-        liveLink.href = project.liveUrl;
-        liveLink.style.display = "block";
-      } else {
-        liveLink.style.display = "none";
-      }
-    }
-
-    // Focus on modal for accessibility
-    const modal = document.querySelector(".modal-container");
-    if (modal) {
-      setTimeout(() => modal.focus(), 0);
-    }
-  }
-
-  /**
-   * Close the modal
-   */
-  function close() {
-    const overlay = document.querySelector(".project-modal-overlay");
-    if (overlay) {
+    function close() {
       overlay.setAttribute("data-visible", "false");
       overlay.setAttribute("data-project-id", "");
       currentProjectId = null;
     }
-  }
 
-  /**
-   * Initialize event listeners
-   */
-  function initializeEventListeners() {
-    // Listen for custom open event
-    document.addEventListener("project-modal:open", (e) => {
-      const projectId = e.detail?.projectId;
-      if (projectId) {
-        updateModalContent(projectId);
+    function initializeEventListeners() {
+      console.log("🎯 Modal event listeners initializing...");
+
+      // Listen for custom open event
+      document.addEventListener("project-modal:open", (e) => {
+        console.log("📢 project-modal:open event received!", e.detail);
+        const projectId = e.detail?.projectId;
+        if (projectId) {
+          updateModalContent(projectId);
+        }
+      });
+
+      // Close button
+      const closeBtn = document.querySelector(".modal-close-btn");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", close);
       }
-    });
 
-    // Listen for custom close event
-    document.addEventListener("project-modal:close", () => {
-      close();
-    });
+      // Overlay click
+      const overlayBg = document.querySelector(".modal-overlay-bg");
+      if (overlayBg) {
+        overlayBg.addEventListener("click", close);
+      }
 
-    // Close button click
-    const closeBtn = document.querySelector(".modal-close-btn");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", close);
+      // Escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && currentProjectId) {
+          close();
+        }
+      });
     }
 
-    // Overlay click (close on background)
-    const overlayBg = document.querySelector(".modal-overlay-bg");
-    if (overlayBg) {
-      overlayBg.addEventListener("click", close);
+    // Initialize when ready
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initializeEventListeners);
+    } else {
+      initializeEventListeners();
     }
-
-    // Escape key handler
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && currentProjectId) {
-        close();
-      }
-    });
-
-    // Tab focus trap within modal
-    document.addEventListener("keydown", (e) => {
-      if (e.key !== "Tab" || !currentProjectId) return;
-
-      const overlay = document.querySelector(".project-modal-overlay");
-      if (!overlay || overlay.getAttribute("data-visible") !== "true") return;
-
-      const modal = document.querySelector(".modal-container");
-      if (!modal) return;
-
-      const focusableElements = modal.querySelectorAll("button, [href], [tabindex]");
-      if (focusableElements.length === 0) return;
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-      const activeElement = document.activeElement;
-
-      if (e.shiftKey) {
-        if (activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        }
-      } else {
-        if (activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
-        }
-      }
-    });
-  }
-
-  // Initialize when DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeEventListeners);
-  } else {
-    initializeEventListeners();
   }
 </script>
