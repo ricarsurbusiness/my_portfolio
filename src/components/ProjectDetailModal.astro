@@ -1,0 +1,581 @@
+---
+import type { Project } from "../types/portfolio";
+
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props;
+
+// Obtener el base path para GitHub Pages
+const base = import.meta.env.BASE_URL;
+
+// Función helper para añadir el base path a las URLs de imágenes
+const getImageUrl = (url: string) => {
+  if (!url || url.startsWith("http")) return url;
+  return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
+};
+---
+
+<div class="project-modal-overlay" data-visible="false" data-project-id="">
+  <!-- Overlay que cierra el modal al hacer clic -->
+  <div class="modal-overlay-bg"></div>
+
+  <!-- Modal container -->
+  <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <!-- Header con título y botón cerrar -->
+    <div class="modal-header">
+      <h2 id="modal-title" class="modal-title"></h2>
+      <button class="modal-close-btn" aria-label="Cerrar modal" type="button">
+        <span aria-hidden="true">✕</span>
+      </button>
+    </div>
+
+    <!-- Contenido del modal -->
+    <div class="modal-content">
+      <!-- Imagen principal -->
+      <div class="modal-image-section">
+        <img src="" alt="" class="modal-image" />
+        <div class="featured-badge" style="display: none;">
+          <span>⭐ Featured</span>
+        </div>
+      </div>
+
+      <!-- Descripción completa -->
+      <div class="modal-description-section">
+        <h3>Descripción</h3>
+        <p class="modal-description"></p>
+      </div>
+
+      <!-- Tecnologías -->
+      <div class="modal-technologies-section">
+        <h3>Tecnologías</h3>
+        <div class="technologies-list"></div>
+      </div>
+
+      <!-- Categorías -->
+      <div class="modal-categories-section">
+        <h3>Categorías</h3>
+        <div class="categories-list"></div>
+      </div>
+    </div>
+
+    <!-- Footer con enlaces de acción -->
+    <div class="modal-footer">
+      <a href="" class="action-link github-link" target="_blank" rel="noopener noreferrer" style="display: none;">
+        <span>🔗 Ver en GitHub</span>
+      </a>
+      <a href="" class="action-link live-link" target="_blank" rel="noopener noreferrer" style="display: none;">
+        <span>🚀 Ver en Vivo</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Modal Overlay Background */
+  .project-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .project-modal-overlay[data-visible="true"] {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .modal-overlay-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .project-modal-overlay[data-visible="true"] .modal-overlay-bg {
+    opacity: 1;
+  }
+
+  /* Modal Container */
+  .modal-container {
+    position: relative;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 16px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .project-modal-overlay[data-visible="true"] .modal-container {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  /* Modal Header */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+    background: rgba(0, 255, 136, 0.03);
+  }
+
+  .modal-title {
+    margin: 0;
+    font-size: 1.75rem;
+    color: #fff;
+    background: linear-gradient(135deg, #fff, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .modal-close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #00ff88;
+  }
+
+  .modal-close-btn:focus {
+    outline: 2px solid #00ff88;
+    outline-offset: 2px;
+  }
+
+  /* Modal Content */
+  .modal-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+
+  .modal-image-section {
+    position: relative;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .modal-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #00ff88, #00cc6f);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #000;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+  }
+
+  .modal-description-section,
+  .modal-technologies-section,
+  .modal-categories-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-description-section h3,
+  .modal-technologies-section h3,
+  .modal-categories-section h3 {
+    color: #00ff88;
+    font-size: 1.1rem;
+    margin: 0 0 0.75rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .modal-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Technologies List */
+  .technologies-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .technology-badge {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  /* Categories List */
+  .categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .category-badge {
+    background: rgba(100, 200, 255, 0.1);
+    color: #64c8ff;
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  /* Modal Footer */
+  .modal-footer {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid rgba(0, 255, 136, 0.1);
+    background: rgba(0, 255, 136, 0.03);
+    flex-wrap: wrap;
+  }
+
+  .action-link {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #00ff88, #00cc6f);
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    display: inline-block;
+  }
+
+  .action-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 255, 136, 0.3);
+  }
+
+  .action-link:focus {
+    outline: 2px solid #00ff88;
+    outline-offset: 2px;
+  }
+
+  .action-link span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Scrollbar styling */
+  .modal-content::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .modal-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .modal-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 136, 0.3);
+    border-radius: 4px;
+  }
+
+  .modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 136, 0.5);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .modal-container {
+      width: 95%;
+      max-height: 90vh;
+      border-radius: 12px;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+    }
+
+    .modal-content {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      flex-direction: column;
+    }
+
+    .action-link {
+      flex: 1;
+      min-width: auto;
+      width: 100%;
+    }
+
+    .modal-image {
+      max-height: 250px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .modal-container {
+      width: 100%;
+      max-height: 95vh;
+      border-radius: 0;
+    }
+
+    .modal-header {
+      padding: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+    }
+
+    .modal-content {
+      padding: 1rem;
+    }
+
+    .modal-footer {
+      padding: 0.75rem 1rem;
+    }
+
+    .modal-description-section h3,
+    .modal-technologies-section h3,
+    .modal-categories-section h3 {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script define:vars={{ projects }}>
+  // Get the base path for image URLs
+  const base = import.meta.env.BASE_URL;
+
+  const getImageUrl = (url: string) => {
+    if (!url || url.startsWith("http")) return url;
+    return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
+  };
+
+  const projectsData = projects;
+  let currentProjectId = null;
+
+  /**
+   * Update modal content with the selected project
+   */
+  function updateModalContent(projectId) {
+    const overlay = document.querySelector(".project-modal-overlay");
+    const project = projectsData.find((p) => p.id === projectId);
+
+    if (!project || !overlay) return;
+
+    currentProjectId = projectId;
+
+    // Update data attributes
+    overlay.setAttribute("data-visible", "true");
+    overlay.setAttribute("data-project-id", projectId);
+
+    // Update modal title
+    const titleEl = document.querySelector(".modal-title");
+    if (titleEl) titleEl.textContent = project.title;
+
+    // Update modal description
+    const descEl = document.querySelector(".modal-description");
+    if (descEl) descEl.textContent = project.description;
+
+    // Update modal image
+    const imgEl = document.querySelector(".modal-image");
+    if (imgEl) {
+      imgEl.src = getImageUrl(project.imageUrl);
+      imgEl.alt = project.title;
+    }
+
+    // Update featured badge
+    const featuredBadge = document.querySelector(".featured-badge");
+    if (featuredBadge) {
+      featuredBadge.style.display = project.featured ? "block" : "none";
+    }
+
+    // Update technologies
+    const techList = document.querySelector(".technologies-list");
+    if (techList) {
+      techList.innerHTML = project.technologies
+        .map((tech) => `<div class="technology-badge">${tech}</div>`)
+        .join("");
+    }
+
+    // Update categories
+    const catList = document.querySelector(".categories-list");
+    if (catList) {
+      catList.innerHTML = project.categories
+        .map((cat) => `<div class="category-badge">${cat}</div>`)
+        .join("");
+    }
+
+    // Update action links
+    const githubLink = document.querySelector(".github-link");
+    if (githubLink) {
+      if (project.githubUrl) {
+        githubLink.href = project.githubUrl;
+        githubLink.style.display = "block";
+      } else {
+        githubLink.style.display = "none";
+      }
+    }
+
+    const liveLink = document.querySelector(".live-link");
+    if (liveLink) {
+      if (project.liveUrl) {
+        liveLink.href = project.liveUrl;
+        liveLink.style.display = "block";
+      } else {
+        liveLink.style.display = "none";
+      }
+    }
+
+    // Focus on modal for accessibility
+    const modal = document.querySelector(".modal-container");
+    if (modal) {
+      setTimeout(() => modal.focus(), 0);
+    }
+  }
+
+  /**
+   * Close the modal
+   */
+  function close() {
+    const overlay = document.querySelector(".project-modal-overlay");
+    if (overlay) {
+      overlay.setAttribute("data-visible", "false");
+      overlay.setAttribute("data-project-id", "");
+      currentProjectId = null;
+    }
+  }
+
+  /**
+   * Initialize event listeners
+   */
+  function initializeEventListeners() {
+    // Listen for custom open event
+    document.addEventListener("project-modal:open", (e) => {
+      const projectId = e.detail?.projectId;
+      if (projectId) {
+        updateModalContent(projectId);
+      }
+    });
+
+    // Listen for custom close event
+    document.addEventListener("project-modal:close", () => {
+      close();
+    });
+
+    // Close button click
+    const closeBtn = document.querySelector(".modal-close-btn");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", close);
+    }
+
+    // Overlay click (close on background)
+    const overlayBg = document.querySelector(".modal-overlay-bg");
+    if (overlayBg) {
+      overlayBg.addEventListener("click", close);
+    }
+
+    // Escape key handler
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && currentProjectId) {
+        close();
+      }
+    });
+
+    // Tab focus trap within modal
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab" || !currentProjectId) return;
+
+      const overlay = document.querySelector(".project-modal-overlay");
+      if (!overlay || overlay.getAttribute("data-visible") !== "true") return;
+
+      const modal = document.querySelector(".modal-container");
+      if (!modal) return;
+
+      const focusableElements = modal.querySelectorAll("button, [href], [tabindex]");
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement;
+
+      if (e.shiftKey) {
+        if (activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeEventListeners);
+  } else {
+    initializeEventListeners();
+  }
+</script>

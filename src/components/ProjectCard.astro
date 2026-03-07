@@ -313,25 +313,31 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
     }
 </style>
 
-<script>
+<script define:vars={{ project }}>
     document.addEventListener("DOMContentLoaded", () => {
         const cards = document.querySelectorAll(".project-card");
 
         cards.forEach((card) => {
-            // Hacer la tarjeta clickeable
-            const href = card.getAttribute("data-href");
-            if (href && href !== "#") {
-                card.addEventListener("click", (e) => {
-                    // Solo si no se clickeó un botón de carrusel
-                    const target = e.target as HTMLElement;
-                    if (
-                        !target.closest(".carousel-btn") &&
-                        !target.closest(".indicator")
-                    ) {
-                        window.open(href, "_blank");
-                    }
-                });
-            }
+            // Handle card click to open modal
+            card.addEventListener("click", (e) => {
+                // Solo si no se clickeó un botón de carrusel
+                const target = e.target as HTMLElement;
+                if (
+                    !target.closest(".carousel-btn") &&
+                    !target.closest(".indicator")
+                ) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Dispatch custom event to open the modal
+                    const event = new CustomEvent("project-modal:open", {
+                        detail: { projectId: project.id },
+                        bubbles: true,
+                        composed: true,
+                    });
+                    document.dispatchEvent(event);
+                }
+            });
+        
 
             // Carrusel
             const carousel = card.querySelector(".carousel");

@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import ProjectDetailModal from "../components/ProjectDetailModal.astro";
 import { projects } from "../data/projects";
 
 // Obtener todas las categorías únicas
@@ -13,6 +14,9 @@ const allCategories = [
     title="Proyectos | Ricardo Suárez"
     description="Explora todos mis proyectos de desarrollo full stack, microservicios, aplicaciones móviles y más"
 >
+    <!-- Project Detail Modal -->
+    <ProjectDetailModal projects={projects} />
+
     <section class="projects-page">
         <div class="container">
             <!-- Header -->
