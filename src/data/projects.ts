@@ -24,27 +24,25 @@ export const projects: Project[] = [
     featured: true,
     categories: ["fullstack", "microservices", "web", "api"],
   },
-  {
-    id: "mussico-fullstack",
-    title: "Mussico Application",
+    {
+    id: "booking-system-fullstack",
+    title: "Booking System – Full-Stack Application",
     description:
-      "Desarrollo fullstack del aplicativo móvil Mussico, construyendo la app multiplataforma con Flutter y Dart y optimizando funcionalidades clave para asegurar una experiencia de usuario fluida. Participación en la integración de la app con servicios backend desarrollados en Node.js, TypeScript y Express, gestionando datos con MongoDB y Azure Blob Storage para el manejo seguro y escalable de archivos multimedia. Implementación de buenas prácticas de arquitectura y uso de Docker para entornos de desarrollo y despliegue consistentes.",
-    imageUrl: "/projects/placeholder.jpg",
+      "Desarrollo fullstack integral de un sistema de reservas empresarial construido con NestJS para el backend, implementando una API REST escalable con autenticación JWT, validación robusta con class-validators y gestión de datos con Prisma ORM sobre PostgreSQL. Frontend desarrollado con Next.js proporcionando una interfaz moderna y responsive para gestión de reservas, calendario interactivo y panel administrativo. Dockerización completa del stack con orquestación multi-contenedor, permitiendo despliegue consistente en desarrollo y producción. Implementación de buenas prácticas de arquitectura fullstack, manejo seguro de transacciones, y optimización de rendimiento de base de datos.",
+    imageUrl: "/projects/encodateImg.jpg",
     technologies: [
-      "Flutter",
-      "Dart",
-      "Node.js",
-      "TypeScript",
-      "Express",
-      "MongoDB",
+      "NestJS",
+      "Next.js",
+      "PostgreSQL",
+      "Prisma",
       "Docker",
-      "Azure",
+      "TypeScript",
     ],
-    githubUrl: "https://github.com/mussico/appmussico",
-    liveUrl: "",
+    githubUrl: "https://github.com/ricarsurbusiness/encodate",
+    liveUrl: "https://encodate.vercel.app/",
     featured: true,
-    categories: ["movil", "fullstack", "api", "devops"],
-  },
+    categories: ["fullstack", "api", "devops"],
+  },  
   {
     id: "qflow-backend",
     title: "QFlow – Backend Microservices",
@@ -66,6 +64,28 @@ export const projects: Project[] = [
     featured: true,
     categories: ["backend", "microservices", "api"],
   },
+  {
+    id: "mussico-fullstack",
+    title: "Mussico Application",
+    description:
+      "Desarrollo fullstack del aplicativo móvil Mussico, construyendo la app multiplataforma con Flutter y Dart y optimizando funcionalidades clave para asegurar una experiencia de usuario fluida. Participación en la integración de la app con servicios backend desarrollados en Node.js, TypeScript y Express, gestionando datos con MongoDB y Azure Blob Storage para el manejo seguro y escalable de archivos multimedia. Implementación de buenas prácticas de arquitectura y uso de Docker para entornos de desarrollo y despliegue consistentes.",
+    imageUrl: "/projects/placeholder.jpg",
+    technologies: [
+      "Flutter",
+      "Dart",
+      "Node.js",
+      "TypeScript",
+      "Express",
+      "MongoDB",
+      "Docker",
+      "Azure",
+    ],
+    githubUrl: "https://github.com/mussico/appmussico",
+    liveUrl: "",
+    featured: true,
+    categories: ["movil", "fullstack", "api", "devops"],
+  },
+
 ];
 
 // Helper para obtener solo proyectos destacados
