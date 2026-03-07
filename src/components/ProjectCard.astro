@@ -22,8 +22,7 @@ const getImageUrl = (url: string) => {
 // Verificar si la imagen existe (no es placeholder genérico)
 const hasRealImage =
     project.imageUrl &&
-    !project.imageUrl.includes("placeholder") &&
-    !project.imageUrl.endsWith(".jpg");
+    !project.imageUrl.includes("placeholder");
 
 // Determinar el enlace principal (prioridad: demo > github)
 const mainLink = project.liveUrl || project.githubUrl || "#";
