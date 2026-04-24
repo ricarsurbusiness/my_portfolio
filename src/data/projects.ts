@@ -2,29 +2,29 @@ import type { Project } from "../types/portfolio";
 
 export const projects: Project[] = [
   {
-    id: "ecommerce-fullstack",
-    title: "E-commerce Microservices Platform",
+    id: "multivendor-ecommerce",
+    title: "MultiVendor E-Commerce Platform",
     description:
-      "Desarrollo fullstack de una plataforma e-commerce basada en microservicios con FastAPI, implementando servicios independientes para autenticación, productos, carrito y órdenes. Backend robusto con JWT, Pydantic, SQLAlchemy y MySQL, acompañado de más de 45 pruebas unitarias con cobertura total. Frontend construido con React 19 y Vite, integrando APIs y gestionando sesión, catálogo y carrito. Orquestación completa con Docker y Docker Compose, manejando múltiples contenedores, volúmenes persistentes y documentación interactiva en /docs.",
+      "Plataforma de marketplace multi-vendor production-ready construida con arquitectura de microservicios, similar a Mercado Libre. Backend robusto con 9 microservicios independientes (Auth, Product, Cart, Order, Payment, Inventory, Notification, Analytics, Admin) basados en FastAPI y PostgreSQL. Sistema de RBAC con 3 roles (superAdmin, admin, cliente) con control granular de permisos. Frontend moderno con React 18, TypeScript y TailwindCSS integrado con Kong API Gateway. Caché de sesiones y carrito con Redis, procesamiento de pagos con múltiples integraciones (Stripe, PayPal, MercadoPago). Orquestación completa con Docker Compose para desarrollo y preparado para Kubernetes en producción.",
     imageUrl: "/projects/placeholder.jpg",
     technologies: [
+      "Python 3.11",
       "FastAPI",
-      "Python",
-      "React 19",
-      "Vite",
-      "MySQL",
-      "SQLAlchemy",
-      "JWT",
+      "React 18",
+      "TypeScript",
+      "PostgreSQL",
+      "Redis",
+      "Kong",
       "Docker",
-      "Pytest",
+      "TailwindCSS",
+      "Microservices",
     ],
-    githubUrl:
-      "https://github.com/ricarsurbusiness/ecommerce-fastapi-microservices",
+    githubUrl: "https://github.com/ricarsurbusiness/lojatodo",
     liveUrl: "",
     featured: true,
-    categories: ["fullstack", "microservices", "web", "api"],
+    categories: ["fullstack", "microservices", "web", "api", "devops"],
   },
-    {
+  {
     id: "booking-system-fullstack",
     title: "Booking System – Full-Stack Application",
     description:
