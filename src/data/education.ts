@@ -4,9 +4,9 @@ export const education: Education[] = [
   {
     institution: "Universidad Popular del Cesar",
     degree: "Ingeniería",
-    fieldOfStudy: "Ingeniería en Sistemas / Informática",
+    fieldOfStudy: "Ingeniería en Sistemas",
     startDate: "2019",
-    endDate: "actualidad",
+    endDate: "2026",
     description:
       "Especialización en desarrollo de software, bases de datos, algoritmos y estructuras de datos. Proyectos académicos en desarrollo web, mobile y sistemas distribuidos.",
     location: "Valledupar, Cesar, Colombia",
