@@ -37,40 +37,21 @@ const base = import.meta.env.BASE_URL;
                         <h2>Hola, soy Ricardo José Suárez Ravelo</h2>
                         <div class="bio-description">
                             <p>
-                                Soy un <strong
-                                    >Desarrollador Full Stack con inclinación
-                                    hacia backend</strong
-                                >, especializado en crear soluciones funcionales
-                                y eficientes. Tengo experiencia práctica con <strong
-                                    >Go, Node.js, Python, React y TypeScript</strong
-                                >, trabajando tanto en el desarrollo de APIs
-                                como en interfaces de usuario.
+                                Soy <strong>Ingeniero de Sistemas y Desarrollador Full Stack</strong>,
+                                con experiencia en el desarrollo de aplicaciones web, diseño de
+                                arquitecturas basadas en microservicios y construcción de soluciones
+                                escalables. He participado en el desarrollo de aplicaciones backend
+                                y frontend, implementando APIs, interfaces web e integraciones para
+                                soluciones orientadas al negocio.
                             </p>
                             <p>
-                                Estoy familiarizado con diferentes sistemas de
-                                bases de datos como
-                                <strong>PostgreSQL, MongoDB y MySQL</strong>, y
-                                herramientas de desarrollo modernas como <strong
-                                    >Docker</strong
-                                > para despliegues.
-                            </p>
-                            <p>
-                                Mi enfoque se centra en implementar <strong
-                                    >arquitecturas de microservicios</strong
-                                >, optimización de rendimiento y escalabilidad
-                                de aplicaciones. He trabajado con tecnologías
-                                cloud como <strong>Azure</strong>, sistemas de
-                                mensajería como
-                                <strong>Twilio API</strong>, y API Gateways como <strong
-                                    >KrakenD</strong
-                                >.
-                            </p>
-                            <p>
-                                Busco aplicar mis conocimientos técnicos en
-                                proyectos desafiantes donde pueda seguir
-                                creciendo profesionalmente, implementando
-                                soluciones que realmente impacten y resuelvan
-                                problemas complejos.
+                                Mi experiencia incluye el desarrollo de soluciones utilizando
+                                <strong>Go, Python, Node.js, React, TypeScript y Flutter</strong>,
+                                así como el trabajo con bases de datos relacionales y NoSQL,
+                                plataformas cloud y herramientas modernas de desarrollo como
+                                <strong>Docker</strong>. Disfruto diseñar software mantenible,
+                                optimizar el rendimiento de las aplicaciones y aplicar buenas
+                                prácticas de ingeniería durante todo el ciclo de desarrollo.
                             </p>
                         </div>
 
@@ -129,6 +110,21 @@ const base = import.meta.env.BASE_URL;
                     <div class="skills-grid">
                         {
                             skillsByCategory.backend.map((skill) => (
+                                <SkillBadge skill={skill} />
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <!-- Databases Skills -->
+                <div class="skill-category">
+                    <h3>
+                        <span class="category-icon">🗄️</span>
+                        Databases
+                    </h3>
+                    <div class="skills-grid">
+                        {
+                            skillsByCategory.databases.map((skill) => (
                                 <SkillBadge skill={skill} />
                             ))
                         }

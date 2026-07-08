@@ -16,6 +16,12 @@ const getImageUrl = (url: string) => {
   return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
 };
 
+type MediaItem = {
+  type: "image" | "video";
+  url: string;
+  alt: string;
+};
+
 // Convertir projects a JSON string para pasar al script
 const projectsJson = JSON.stringify(projects);
 ---
@@ -36,9 +42,9 @@ const projectsJson = JSON.stringify(projects);
 
     <!-- Contenido del modal -->
     <div class="modal-content">
-      <!-- Imagen principal -->
-      <div class="modal-image-section">
-        <img src="" alt="" class="modal-image" />
+      <!-- Media principal -->
+      <div class="modal-media-section">
+        <div class="modal-media-carousel"></div>
         <div class="featured-badge" style="display: none;">
           <span>⭐ Featured</span>
         </div>
@@ -189,20 +195,120 @@ const projectsJson = JSON.stringify(projects);
     overflow-y: auto;
   }
 
-  .modal-image-section {
+  .modal-media-section {
     position: relative;
     margin-bottom: 2rem;
     border-radius: 12px;
     overflow: hidden;
   }
 
-  .modal-image {
+  .modal-media-carousel {
+    position: relative;
     width: 100%;
-    height: auto;
+    min-height: 260px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .modal-media-single {
+    width: 100%;
+    min-height: 260px;
+  }
+
+  .modal-carousel {
+    position: relative;
+    width: 100%;
+    min-height: 260px;
+  }
+
+  .modal-carousel-container {
+    position: relative;
+    width: 100%;
+    min-height: 260px;
+  }
+
+  .modal-carousel-item {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .modal-carousel-item.active {
+    opacity: 1;
+  }
+
+  .modal-carousel-item img,
+  .modal-carousel-item video,
+  .modal-media-single img,
+  .modal-media-single video {
+    width: 100%;
+    height: 100%;
     max-height: 400px;
     object-fit: cover;
     display: block;
     border-radius: 8px;
+  }
+
+  .modal-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+
+  .modal-carousel:hover .modal-carousel-btn {
+    opacity: 1;
+  }
+
+  .modal-carousel-btn:hover {
+    background: rgba(0, 255, 136, 0.8);
+    color: #0a0a14;
+  }
+
+  .modal-carousel-btn.prev {
+    left: 0.5rem;
+  }
+
+  .modal-carousel-btn.next {
+    right: 0.5rem;
+  }
+
+  .modal-carousel-indicators {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 2;
+  }
+
+  .modal-carousel-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease;
+  }
+
+  .modal-carousel-indicator.active {
+    background: #00ff88;
+    border-color: #00ff88;
+  }
+
+  .modal-carousel-indicator:hover {
+    background: rgba(255, 255, 255, 0.6);
   }
 
   .featured-badge {
@@ -368,7 +474,17 @@ const projectsJson = JSON.stringify(projects);
       width: 100%;
     }
 
-    .modal-image {
+    .modal-media-carousel,
+    .modal-media-single,
+    .modal-carousel,
+    .modal-carousel-container {
+      min-height: 220px;
+    }
+
+    .modal-carousel-item img,
+    .modal-carousel-item video,
+    .modal-media-single img,
+    .modal-media-single video {
       max-height: 250px;
     }
   }
@@ -406,70 +522,242 @@ const projectsJson = JSON.stringify(projects);
 
 <script>
   // Get modal overlay and parse projects data from attribute
-  const overlay = document.querySelector(".project-modal-overlay");
-  if (!overlay) {
+  type ScriptMediaItem = {
+    type: "image" | "video";
+    url: string;
+    alt: string;
+  };
+
+  type ScriptProject = {
+    id: string;
+    title: string;
+    description: string;
+    imageUrl: string;
+    imageGallery?: string[];
+    videoUrl?: string;
+    videoGallery?: string[];
+    technologies: string[];
+    githubUrl?: string;
+    liveUrl?: string;
+    featured: boolean;
+    categories: string[];
+  };
+
+  const overlayElement = document.querySelector<HTMLElement>(".project-modal-overlay");
+  if (!overlayElement) {
     console.error("Modal overlay not found");
   } else {
+    const overlay = overlayElement;
     const projectsJson = overlay.getAttribute("data-projects");
     const base = overlay.getAttribute("data-base-url") || "/";
-    
-    const projectsData = projectsJson ? JSON.parse(projectsJson) : [];
-    let currentProjectId = null;
+
+    const projectsData: ScriptProject[] = projectsJson ? (JSON.parse(projectsJson) as ScriptProject[]) : [];
+    let currentProjectId: string | null = null;
 
     console.log("🎯 ProjectDetailModal initialized, found", projectsData.length, "projects");
 
-    const getImageUrl = (url) => {
+    const getImageUrl = (url: string) => {
       if (!url || url.startsWith("http")) return url;
       return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
     };
 
-    function updateModalContent(projectId) {
-      const project = projectsData.find((p) => p.id === projectId);
-      if (!project || !overlay) return;
+    const escapeHtml = (value: string) =>
+      String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    const buildMediaGallery = (project: ScriptProject) => {
+      const mediaItems: ScriptMediaItem[] = [];
+
+      if (project.imageGallery?.length) {
+        mediaItems.push(
+          ...project.imageGallery.map((url: string, index: number) => ({
+            type: "image" as const,
+            url,
+            alt: `${project.title} - imagen ${index + 1}`,
+          })),
+        );
+      } else if (project.imageUrl && !project.imageUrl.includes("placeholder")) {
+        mediaItems.push({
+          type: "image",
+          url: project.imageUrl,
+          alt: project.title,
+        });
+      }
+
+      if (project.videoGallery?.length) {
+        mediaItems.push(
+          ...project.videoGallery.map((url: string, index: number) => ({
+            type: "video" as const,
+            url,
+            alt: `${project.title} - video ${index + 1}`,
+          })),
+        );
+      } else if (project.videoUrl) {
+        mediaItems.push({
+          type: "video" as const,
+          url: project.videoUrl,
+          alt: `${project.title} - video`,
+        });
+      }
+
+      return mediaItems;
+    };
+
+    const renderMediaSection = (project: ScriptProject) => {
+      const mediaSection = document.querySelector<HTMLElement>(".modal-media-carousel");
+      if (!mediaSection) return;
+
+      const mediaItems = buildMediaGallery(project);
+      if (!mediaItems.length) {
+        mediaSection.innerHTML = "";
+        return;
+      }
+
+      if (mediaItems.length === 1) {
+        mediaSection.innerHTML = `
+          <div class="modal-media-single">
+            ${
+              mediaItems[0].type === "video"
+                ? `<video src="${getImageUrl(mediaItems[0].url)}" muted autoplay loop playsinline controls preload="metadata"></video>`
+                : `<img src="${getImageUrl(mediaItems[0].url)}" alt="${escapeHtml(mediaItems[0].alt)}" />`
+            }
+          </div>
+        `;
+        return;
+      }
+
+      mediaSection.innerHTML = `
+        <div class="modal-carousel">
+          <div class="modal-carousel-container">
+            ${mediaItems
+              .map(
+                (media: ScriptMediaItem, index: number) => `
+                  <div class="modal-carousel-item ${index === 0 ? "active" : ""}" data-index="${index}">
+                    ${
+                      media.type === "video"
+                        ? `<video src="${getImageUrl(media.url)}" muted autoplay loop playsinline controls preload="metadata"></video>`
+                        : `<img src="${getImageUrl(media.url)}" alt="${escapeHtml(media.alt)}" />`
+                    }
+                  </div>
+                `,
+              )
+              .join("")}
+          </div>
+          <button class="modal-carousel-btn prev" data-carousel="prev">‹</button>
+          <button class="modal-carousel-btn next" data-carousel="next">›</button>
+          <div class="modal-carousel-indicators">
+            ${mediaItems
+              .map(
+                (_, index) =>
+                  `<button class="modal-carousel-indicator ${index === 0 ? "active" : ""}" data-index="${index}"></button>`,
+              )
+              .join("")}
+          </div>
+        </div>
+      `;
+
+      const carousel = mediaSection.querySelector<HTMLElement>(".modal-carousel");
+      if (!carousel) return;
+
+      const items = carousel.querySelectorAll<HTMLElement>(".modal-carousel-item");
+      const indicators = carousel.querySelectorAll<HTMLElement>(".modal-carousel-indicator");
+      const prevBtn = carousel.querySelector<HTMLButtonElement>('[data-carousel="prev"]');
+      const nextBtn = carousel.querySelector<HTMLButtonElement>('[data-carousel="next"]');
+
+      let currentIndex: number = 0;
+
+      const showItem = (index: number) => {
+        items.forEach((item: HTMLElement, itemIndex: number) => {
+          item.classList.toggle("active", itemIndex === index);
+
+          const video = item.querySelector<HTMLVideoElement>("video");
+          if (video instanceof HTMLVideoElement) {
+            if (itemIndex === index) {
+              video.currentTime = 0;
+              video.play().catch(() => {});
+            } else {
+              video.pause();
+            }
+          }
+        });
+
+        indicators.forEach((indicator: HTMLElement, itemIndex: number) => {
+          indicator.classList.toggle("active", itemIndex === index);
+        });
+
+        currentIndex = index;
+      };
+
+      prevBtn?.addEventListener("click", (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+        showItem(newIndex);
+      });
+
+      nextBtn?.addEventListener("click", (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1;
+        showItem(newIndex);
+      });
+
+      indicators.forEach((indicator: HTMLElement, index: number) => {
+        indicator.addEventListener("click", (event: MouseEvent) => {
+          event.preventDefault();
+          event.stopPropagation();
+          showItem(index);
+        });
+      });
+    };
+
+    function updateModalContent(projectId: string) {
+      const project = projectsData.find((p: ScriptProject) => p.id === projectId);
+      if (!project) return;
 
       currentProjectId = projectId;
       overlay.setAttribute("data-visible", "true");
       overlay.setAttribute("data-project-id", projectId);
 
       // Update title
-      const titleEl = document.querySelector(".modal-title");
+      const titleEl = document.querySelector<HTMLElement>(".modal-title");
       if (titleEl) titleEl.textContent = project.title;
 
       // Update description
-      const descEl = document.querySelector(".modal-description");
+      const descEl = document.querySelector<HTMLElement>(".modal-description");
       if (descEl) descEl.textContent = project.description;
 
-      // Update image
-      const imgEl = document.querySelector(".modal-image");
-      if (imgEl) {
-        imgEl.src = getImageUrl(project.imageUrl);
-        imgEl.alt = project.title;
-      }
+      // Update media
+      renderMediaSection(project);
 
       // Update featured badge
-      const featuredBadge = document.querySelector(".featured-badge");
+      const featuredBadge = document.querySelector<HTMLElement>(".featured-badge");
       if (featuredBadge) {
         featuredBadge.style.display = project.featured ? "block" : "none";
       }
 
       // Update technologies
-      const techList = document.querySelector(".technologies-list");
+      const techList = document.querySelector<HTMLElement>(".technologies-list");
       if (techList) {
         techList.innerHTML = project.technologies
-          .map((tech) => `<div class="technology-badge">${tech}</div>`)
+          .map((tech: string) => `<div class="technology-badge">${tech}</div>`)
           .join("");
       }
 
       // Update categories
-      const catList = document.querySelector(".categories-list");
+      const catList = document.querySelector<HTMLElement>(".categories-list");
       if (catList) {
         catList.innerHTML = project.categories
-          .map((cat) => `<div class="category-badge">${cat}</div>`)
+          .map((cat: string) => `<div class="category-badge">${cat}</div>`)
           .join("");
       }
 
       // Update links
-      const githubLink = document.querySelector(".github-link");
+      const githubLink = document.querySelector<HTMLAnchorElement>(".github-link");
       if (githubLink) {
         if (project.githubUrl) {
           githubLink.href = project.githubUrl;
@@ -479,7 +767,7 @@ const projectsJson = JSON.stringify(projects);
         }
       }
 
-      const liveLink = document.querySelector(".live-link");
+      const liveLink = document.querySelector<HTMLAnchorElement>(".live-link");
       if (liveLink) {
         if (project.liveUrl) {
           liveLink.href = project.liveUrl;
@@ -500,28 +788,29 @@ const projectsJson = JSON.stringify(projects);
       console.log("🎯 Modal event listeners initializing...");
 
       // Listen for custom open event
-      document.addEventListener("project-modal:open", (e) => {
-        console.log("📢 project-modal:open event received!", e.detail);
-        const projectId = e.detail?.projectId;
+      document.addEventListener("project-modal:open", (e: Event) => {
+        const detail = (e as CustomEvent<{ projectId?: string }>).detail;
+        console.log("📢 project-modal:open event received!", detail);
+        const projectId = detail?.projectId;
         if (projectId) {
           updateModalContent(projectId);
         }
       });
 
       // Close button
-      const closeBtn = document.querySelector(".modal-close-btn");
+      const closeBtn = document.querySelector<HTMLButtonElement>(".modal-close-btn");
       if (closeBtn) {
         closeBtn.addEventListener("click", close);
       }
 
       // Overlay click
-      const overlayBg = document.querySelector(".modal-overlay-bg");
+      const overlayBg = document.querySelector<HTMLElement>(".modal-overlay-bg");
       if (overlayBg) {
         overlayBg.addEventListener("click", close);
       }
 
       // Escape key
-      document.addEventListener("keydown", (e) => {
+      document.addEventListener("keydown", (e: KeyboardEvent) => {
         if (e.key === "Escape" && currentProjectId) {
           close();
         }

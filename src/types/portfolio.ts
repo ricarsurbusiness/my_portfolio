@@ -4,6 +4,8 @@ export interface Project {
   description: string;
   imageUrl: string;
   imageGallery?: string[]; // Array de URLs para carrusel de imágenes
+  videoUrl?: string;
+  videoGallery?: string[]; // Array de URLs para carrusel de videos
   technologies: string[];
   githubUrl?: string;
   liveUrl?: string;
@@ -23,7 +25,7 @@ export interface Project {
 export interface Skill {
   name: string;
   level: "beginner" | "intermediate" | "advanced" | "expert";
-  category: "frontend" | "backend" | "devops" | "design";
+  category: "frontend" | "backend" | "devops" | "design" | "databases";
   iconUrl?: string;
 }
 

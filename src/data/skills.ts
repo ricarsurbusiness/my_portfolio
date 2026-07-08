@@ -14,27 +14,40 @@ export const skills: Skill[] = [
   // BACKEND
   { name: "Node.js", level: "expert", category: "backend" },
   { name: "Express", level: "expert", category: "backend" },
+  { name: "Java", level: "intermediate", category: "backend" },
   { name: "FastAPI", level: "advanced", category: "backend" },
   { name: "Python", level: "advanced", category: "backend" },
   { name: "Go", level: "advanced", category: "backend" },
   { name: "REST APIs", level: "expert", category: "backend" },
   { name: "WebSocket", level: "advanced", category: "backend" },
   { name: "Microservices", level: "advanced", category: "backend" },
-  { name: "PostgreSQL", level: "advanced", category: "backend" },
-  { name: "MySQL", level: "advanced", category: "backend" },
-  { name: "MongoDB", level: "advanced", category: "backend" },
+  { name: "RabbitMQ", level: "intermediate", category: "backend" },
+  { name: "Redis", level: "intermediate", category: "backend" },
+  { name: "Authentication / JWT", level: "advanced", category: "backend" },
+  { name: "Swagger / OpenAPI", level: "advanced", category: "backend" },
   { name: "SQLAlchemy", level: "advanced", category: "backend" },
   { name: "Prisma", level: "intermediate", category: "backend" },
 
-  // DEVOPS
-  { name: "Docker", level: "advanced", category: "devops" },
-  { name: "Docker Compose", level: "advanced", category: "devops" },
-  { name: "Git", level: "advanced", category: "devops" },
-  { name: "Azure", level: "intermediate", category: "devops" },
-  { name: "KrakenD", level: "intermediate", category: "devops" },
+  // DATABASES
+  { name: "PostgreSQL", level: "advanced", category: "databases" },
+  { name: "MongoDB", level: "advanced", category: "databases" },
+  { name: "MySQL", level: "advanced", category: "databases" },
+
+// DEVOPS & CLOUD
+{ name: "Docker", level: "advanced", category: "devops" },
+{ name: "Docker Compose", level: "advanced", category: "devops" },
+{ name: "Git", level: "advanced", category: "devops" },
+{ name: "CI/CD", level: "intermediate", category: "devops" },
+{ name: "GitHub Actions", level: "intermediate", category: "devops" },
+{ name: "GCP", level: "intermediate", category: "devops" },
+{ name: "Azure", level: "intermediate", category: "devops" },
+{ name: "KrakenD", level: "intermediate", category: "devops" },
+{ name: "Linux", level: "intermediate", category: "devops" },
+{ name: "AWS", level: "intermediate", category: "devops" },
 
   // DESIGN & TOOLS
   { name: "Figma", level: "intermediate", category: "design" },
+  { name: "JIRA", level: "intermediate", category: "design" },
   { name: "Postman", level: "expert", category: "design" },
 ];
 
@@ -46,5 +59,6 @@ export const skillsByCategory = {
   frontend: getSkillsByCategory("frontend"),
   backend: getSkillsByCategory("backend"),
   devops: getSkillsByCategory("devops"),
+  databases: getSkillsByCategory("databases"),
   design: getSkillsByCategory("design"),
 };

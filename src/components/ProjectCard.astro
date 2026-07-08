@@ -19,10 +19,53 @@ const getImageUrl = (url: string) => {
     return url.startsWith("/") ? `${base}${url.slice(1)}` : `${base}${url}`;
 };
 
-// Verificar si la imagen existe (no es placeholder genérico)
-const hasRealImage =
-    project.imageUrl &&
-    !project.imageUrl.includes("placeholder");
+type MediaItem = {
+    type: "image" | "video";
+    url: string;
+    alt: string;
+};
+
+const buildMediaGallery = (project: Project): MediaItem[] => {
+    const mediaItems: MediaItem[] = [];
+
+    if (project.imageGallery?.length) {
+        mediaItems.push(
+            ...project.imageGallery.map((url, index) => ({
+                type: "image" as const,
+                url,
+                alt: `${project.title} - imagen ${index + 1}`,
+            })),
+        );
+    } else if (project.imageUrl && !project.imageUrl.includes("placeholder")) {
+        mediaItems.push({
+            type: "image",
+            url: project.imageUrl,
+            alt: project.title,
+        });
+    }
+
+    if (project.videoGallery?.length) {
+        mediaItems.push(
+            ...project.videoGallery.map((url, index) => ({
+                type: "video" as const,
+                url,
+                alt: `${project.title} - video ${index + 1}`,
+            })),
+        );
+    } else if (project.videoUrl) {
+        mediaItems.push({
+            type: "video",
+            url: project.videoUrl,
+            alt: `${project.title} - video`,
+        });
+    }
+
+    return mediaItems;
+};
+
+const mediaGallery = buildMediaGallery(project);
+const hasMedia = mediaGallery.length > 0;
+const hasCarousel = mediaGallery.length > 1;
 
 // Determinar el enlace principal (prioridad: demo > github)
 const mainLink = project.liveUrl || project.githubUrl || "#";
@@ -31,17 +74,34 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
 <article class="project-card" data-href={mainLink} data-project-id={project.id}>
     <div class="project-image">
         {
-            hasRealImage ? (
-                project.imageGallery && project.imageGallery.length > 1 ? (
+            hasMedia ? (
+                hasCarousel ? (
                     <div class="carousel">
                         <div class="carousel-container">
-                            {project.imageGallery.map((imgUrl, index) => (
-                                <img
-                                    src={getImageUrl(imgUrl)}
-                                    alt={`${project.title} - imagen ${index + 1}`}
-                                    class={`carousel-image ${index === 0 ? "active" : ""}`}
+                            {mediaGallery.map((media, index) => (
+                                <div
+                                    class={`carousel-item ${index === 0 ? "active" : ""}`}
                                     data-index={index}
-                                />
+                                >
+                                    {
+                                        media.type === "image" ? (
+                                            <img
+                                                src={getImageUrl(media.url)}
+                                                alt={media.alt}
+                                            />
+                                        ) : (
+                                            <video
+                                                src={getImageUrl(media.url)}
+                                                class="carousel-video"
+                                                muted
+                                                autoplay
+                                                loop
+                                                playsinline
+                                                preload="metadata"
+                                            />
+                                        )
+                                    }
+                                </div>
                             ))}
                         </div>
                         <button class="carousel-btn prev" data-carousel="prev">
@@ -51,7 +111,7 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
                             ›
                         </button>
                         <div class="carousel-indicators">
-                            {project.imageGallery.map((_, index) => (
+                            {mediaGallery.map((_, index) => (
                                 <button
                                     class={`indicator ${index === 0 ? "active" : ""}`}
                                     data-index={index}
@@ -59,10 +119,17 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
                             ))}
                         </div>
                     </div>
+                ) : mediaGallery[0].type === "image" ? (
+                    <img src={getImageUrl(mediaGallery[0].url)} alt={mediaGallery[0].alt} />
                 ) : (
-                    <img
-                        src={getImageUrl(project.imageUrl)}
-                        alt={project.title}
+                    <video
+                        src={getImageUrl(mediaGallery[0].url)}
+                        class="single-media-video"
+                        muted
+                        autoplay
+                        loop
+                        playsinline
+                        preload="metadata"
                     />
                 )
             ) : (
@@ -137,14 +204,16 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
         overflow: hidden;
     }
 
-    .project-image img {
+    .project-image img,
+    .project-image video {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
     }
 
-    .project-card:hover .project-image img {
+    .project-card:hover .project-image img,
+    .project-card:hover .project-image video {
         transform: scale(1.1);
     }
 
@@ -161,7 +230,7 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
         position: relative;
     }
 
-    .carousel-image {
+    .carousel-item {
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -172,8 +241,17 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
         transition: opacity 0.5s ease-in-out;
     }
 
-    .carousel-image.active {
+    .carousel-item.active {
         opacity: 1;
+    }
+
+    .carousel-item img,
+    .carousel-item video,
+    .single-media-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
     .carousel-btn {
@@ -351,16 +429,26 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
             const carousel = card.querySelector(".carousel");
             if (!carousel) return;
 
-            const images = carousel.querySelectorAll(".carousel-image");
+            const items = carousel.querySelectorAll(".carousel-item");
             const indicators = carousel.querySelectorAll(".indicator");
             const prevBtn = carousel.querySelector('[data-carousel="prev"]');
             const nextBtn = carousel.querySelector('[data-carousel="next"]');
 
             let currentIndex = 0;
 
-            function showImage(index: number) {
-                images.forEach((img, i) => {
-                    img.classList.toggle("active", i === index);
+            function showItem(index: number) {
+                items.forEach((item, i) => {
+                    item.classList.toggle("active", i === index);
+
+                    const video = item.querySelector("video");
+                    if (video instanceof HTMLVideoElement) {
+                        if (i === index) {
+                            video.currentTime = 0;
+                            video.play().catch(() => {});
+                        } else {
+                            video.pause();
+                        }
+                    }
                 });
                 indicators.forEach((ind, i) => {
                     ind.classList.toggle("active", i === index);
@@ -372,23 +460,23 @@ const mainLink = project.liveUrl || project.githubUrl || "#";
                 e.preventDefault();
                 e.stopPropagation();
                 const newIndex =
-                    currentIndex === 0 ? images.length - 1 : currentIndex - 1;
-                showImage(newIndex);
+                    currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+                showItem(newIndex);
             });
 
             nextBtn?.addEventListener("click", (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 const newIndex =
-                    currentIndex === images.length - 1 ? 0 : currentIndex + 1;
-                showImage(newIndex);
+                    currentIndex === items.length - 1 ? 0 : currentIndex + 1;
+                showItem(newIndex);
             });
 
             indicators.forEach((indicator, index) => {
                 indicator.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    showImage(index);
+                    showItem(index);
                 });
             });
         });
